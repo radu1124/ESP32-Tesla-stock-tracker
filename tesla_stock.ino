@@ -11,14 +11,17 @@
 
 Adafruit_SH1106G display = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-const char* ssid = "URB 2.4";
-const char* password = "11242002";
-const String apiKey = "0E3ZSE78BN821L9L";
-const String symbol = "SPY"; // Simbolul pentru acțiunile Tesla
+// wifi ssid and password
+const char* ssid = "";
+const char* password = "";
+
+const String apiKey = ""; // insert your API key
+const String symbol = "TSLA"; // Tesla stock ticker symbol
 
 const String url = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" + symbol + "&apikey=" + apiKey;
 
 void setup() {
+  // OLED setup
   Serial.begin(115200);
   delay(250);
   display.begin(i2c_Address, true);
@@ -52,13 +55,13 @@ void loop() {
       DynamicJsonDocument doc(1024);
       deserializeJson(doc, payload);
 
-      String price = doc["Global Quote"]["05. price"]; // Obține prețul acțiunilor Tesla
+      String price = doc["Global Quote"]["05. price"]; // get Tesla stock from API
 
       display.clearDisplay();
       display.setTextSize(1);
       display.setCursor(0,0);
-      display.println("S&P500 Price:");
-      display.println("$" + price); // Afișează prețul acțiunilor Tesla
+      display.println("TSLA Price:");
+      display.println("$" + price); // show price from API
       display.display();
     } else {
       Serial.println("Error getting data from API");
@@ -67,5 +70,5 @@ void loop() {
     http.end();
   }
 
-  delay(60000); // Actualizează datele o dată pe minut
+  delay(60000); // refresh once a minute
 }
